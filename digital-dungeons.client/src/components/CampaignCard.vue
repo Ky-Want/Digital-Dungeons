@@ -4,14 +4,19 @@
     <div class="muted-layer rounded-3 text-end">
       <div class="dropdown on-hover">
         <button class="btn back dropdown-toggle text-visible px-2" type="button" data-bs-toggle="dropdown"
-          aria-expanded="false" v-if="account.id == campaign.creatorId">Options</button>
+          aria-expanded="false" v-if="account.id == campaign.creatorId">
+          Options
+        </button>
         <ul class="dropdown-menu">
           <li class="dropdown-item">
-            <button class="btn" data-bs-toggle="modal" :data-bs-target="'#campaignModalEdit' + campaign.id">Edit
-              Campaign</button>
+            <button class="btn" data-bs-toggle="modal" :data-bs-target="'#campaignModalEdit' + campaign.id">
+              Edit Campaign
+            </button>
           </li>
           <li class="dropdown-item">
-            <button class="btn" @click.stop="removeCampaign(campaign.id)">Delete Campaign</button>
+            <button class="btn" @click.stop="removeCampaign(campaign.id)">
+              Delete Campaign
+            </button>
           </li>
         </ul>
       </div>
@@ -20,10 +25,11 @@
         <div
           class="card-content d-flex flex-column flex-wrap justify-content-around text-center color-shift animate__animated animate__fadeIn">
           <span class="pb-5 fs-4 text-visible">{{ campaign.name }}</span>
-          <span class="flex-grow-1 mt-5 desc fs-6"
-            :class="campaign.desc.length > 120 ? 'text-truncate' : ''">{{campaign.desc }}</span>
-          <span class="" v-if="campaign.desc.length > 120"><em>Truncated desc as it was too long (> 120
-              chars)</em></span>
+          <span class="flex-grow-1 mt-5 desc fs-6" :class="campaign.desc.length > 120 ? 'text-truncate' : ''">{{
+              campaign.desc
+          }}</span>
+          <!-- <span class="" v-if="campaign.desc.length > 120"><em>Truncated desc as it was too long (> 120
+              chars)</em></span> -->
         </div>
       </router-link>
     </div>
@@ -115,8 +121,6 @@ export default {
 
 .color-shift:hover {
   color: rgb(96, 190, 234);
-  text-shadow: 1px 1px rgba(0, 0, 0, 0.644),
-    0px 0px 5px rgba(189, 234, 30, 0.678);
 }
 
 .theme-card:hover {

@@ -1,71 +1,76 @@
 <template>
-  <div class="container-fluid right">
-    <div>
-      <div>
-        <div v-if="activeEncounter" class="h00 elevated rounded">
-          <div class="text-light h00 glass">
-            <section class="row justify-content-between">
-              <div class="AETitle text-center">
-                <div class="text-shadow2">
-                  <h2>{{ activeEncounter?.name }}</h2>
-                </div>
-              </div>
-              <!-- NOTE Cant input Dm's Name because creator of campaign is not populated on campaign
-              <div class="col-3 bg-dark p-2">
-                <div class="bg-secondary p-1">
-                  {{ activeEncounter }}
-                </div>
-              </div> -->
-              <!-- ADD ENCOUNTER -->
-            </section>
-            <section class="row top">
-              <div class="col-12 d-flex">
-                <img :src="activeEncounter?.coverImg" alt="" class="img-fluid encounterImage" />
-                <p class="p-5 text-shadow">{{ activeEncounter?.desc }}</p>
-              </div>
-              <!-- SECTION search monsters -->
-              <div class="col-4 bg-transparent bottomLeft box">
-                <SearchPagination />
-                <div class="elem2 scrollable animate__animated animate__lightSpeedInLeft">
-                  <MonsterDetailsModal v-for="m in monsters" :key="m.slug" :monster="m" />
-                </div>
-              </div>
-              <!-- SECTION my monsters -->
-              <div class="col-md-8">
-                <div class="row">
-                  <ActiveEncounterMonsters v-for="m in activeMonsters" :key="m.slug" :monster="m" />
-                </div>
-              </div>
-            </section>
-            <section></section>
-          </div>
-        </div>
+  <div class="container-fluid">
+    <div class="row AETitle" v-if="activeEncounter">
+      <div class="col-md-4 d-flex justify-content-between align-items-center">
+        <router-link :to="{ name: 'CampaignDetails', params: { campaignId: route.params.campaignId }} ">
+          <span>Go Back</span>
+        </router-link>
+      </div>
+      <div class="col-md-4 d-flex justify-content-center align-items-center">
+        <span class="text-primary fs-3">{{ activeEncounter?.name }}</span>
+      </div>
+      <div class="col-md-4 d-flex justify-content-between align-items-center" v-if="activeEncounter?.creatorId === account?.id">
+        <button class="text-primary btn" data-bs-toggle="modal"
+          :data-bs-target="'#encounterModal' + activeEncounter?.id">
+          Edit Encounter
+        </button>
+        <button class="btn text-primary" data-bs-toggle="modal" data-bs-target="#addCharacterModal">
+          Add Character
+        </button>
+        <button class="btn text-primary" @click.stop="rollInitiatives()">
+          Roll Initiatives
+        </button>
       </div>
     </div>
-  </div>
+    <section class="row content">
+      <div class="col-12 img-col d-flex">
+        <img :src="activeEncounter?.coverImg" alt="" class="img-fluid encounterImage rounded" />
+        <p class="p-5 text-primary">{{ activeEncounter?.desc }}</p>
+      </div>
+      <div class="col-md-4 bg-transparent monster-col box">
+        <SearchPagination />
+        <div class="elem2 scrollable">
+          <MonsterDetailsModal v-for="m in monsters" :key="m.slug" :monster="m" />
+        </div>
+      </div>
+      <div class="col-md-8 monster-col">
+        <div class="d-flex flex-wrap gap-3 pt-3 scrollable h-100 align-content-start">
+          <ActiveEncounterMonsters v-for="m in activeMonsters" :key="m.id" :monster="m" />
+        </div>
+      </div>
+    </section>
 
-  <!-- MODAL COMPONENT -->
-  <CreateEncounterModal />
+    <div v-if="activeEncounter">
+      <EditEncounterDetailsModal :encounter="activeEncounter" />
+    </div>
+
+    <CreateEncounterModal />
+    <CreateCharacterModal />
+  </div>
 </template>
 
 <script>
-import { computed, onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
+import { computed, onMounted } from "vue";
+import { onBeforeRouteLeave, useRoute } from "vue-router";
 import { AppState } from "../AppState.js";
-import Pop from "../utils/Pop.js";
-import CreateEncounterModal from "../components/CreateEncounterModal.vue";
-import EncounterCard from "../components/EncounterCard.vue";
 import { encountersService } from "../services/EncountersService.js";
-import MonsterCard from "../components/InformationCards/MonsterCard.vue";
 import { informationService } from "../services/InformationService.js";
+import { monstersService } from "../services/MonstersService.js";
+import CreateEncounterModal from "../components/CreateEncounterModal.vue";
+import EditEncounterDetailsModal from "../components/EditEncounterDetailsModal.vue";
+import Pop from "../utils/Pop.js";
+import EncounterCard from "../components/EncounterCard.vue";
+import MonsterCard from "../components/InformationCards/MonsterCard.vue";
 import MonsterDetailsModal from "../components/MonsterDetailsModal.vue";
 import AccountPage from "./AccountPage.vue";
 import ActiveEncounterMonsters from "../components/ActiveEncounterMonsters.vue";
-import { monstersService } from "../services/MonstersService.js";
 import SearchPagination from "../components/SearchPagination.vue";
+import CreateCharacterModal from "../components/CreateCharacterModal.vue";
+
 export default {
   setup() {
     const route = useRoute();
+
     async function getEncounterById() {
       try {
         await encountersService.getEncounterById(
@@ -91,20 +96,24 @@ export default {
         await monstersService.getMonstersByEncounterId(
           route.params.encounterId
         );
-        // console.log("getMonstersByEncounterId", AppState.activeEncounterMonsters);
       } catch (error) {
         Pop.error(error);
       }
     }
+
     onMounted(() => {
       getEncounterById();
       getApiMonsters();
       getMonstersByEncounterId();
     });
 
-    const editable = ref("");
+    onBeforeRouteLeave(() => {
+      AppState.monsters = []
+      AppState.activeCategory = null
+    })
+
     return {
-      editable,
+      route,
       campaigns: computed(() => AppState.campaigns),
       account: computed(() => AppState.account),
       encounter: computed(() => AppState.encounters),
@@ -114,29 +123,29 @@ export default {
       nextPage: computed(() => AppState.nextPage),
       previousPage: computed(() => AppState.previousPage),
       category: computed(() => AppState.activeCategory),
-      activeMonsters: computed(() => AppState.activeEncounterMonsters),
+      activeMonsters: computed(() =>
+        AppState.activeEncounterMonsters.sort(
+          (a, b) => b.initiative - a.initiative
+        )
+      ),
 
-      async handleSubmit() {
+      async rollInitiatives() {
         try {
-          await informationService.getApiInfo(AppState.activeCategory, {
-            search: editable.value,
-          });
-          editable.value = "";
+          await monstersService.rollInitiatives(route.params.encounterId);
         } catch (error) {
-          Pop.error(error, ["SearchSubmit"]);
+          Pop.error(error);
         }
       },
-
-      async changeCategory(category) {
+      async addCharacter() {
         try {
-          await informationService.getApiInfo(category);
-          informationService.setActiveCategory(category);
+          await monstersService.addCharacter(req.body);
         } catch (error) {
-          Pop.error(error, "[ChangeCategory]");
+          Pop.error(error);
         }
       },
     };
   },
+
   components: {
     CreateEncounterModal,
     EncounterCard,
@@ -144,38 +153,14 @@ export default {
     MonsterDetailsModal,
     AccountPage,
     ActiveEncounterMonsters,
-    SearchPagination
+    SearchPagination,
+    EditEncounterDetailsModal,
+    CreateCharacterModal
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.h00 {
-  height: 96vh;
-  background-size: cover;
-  background-position: center;
-}
-
-.text-shadow {
-  color: rgb(113, 166, 177);
-  text-shadow: 1px 1px rgb(28, 51, 74), 0px 0px 5px rgb(136, 62, 147);
-  font-weight: bold;
-  letter-spacing: 0.08rem;
-  font-family: "Morpheus";
-  src: local("Morphues") url(./fonts/MORPHEUS.TTF) format("truetype");
-}
-
-.text-shadow2 {
-  color: rgba(117, 117, 13, 0.727);
-  text-shadow: 1px 1px rgb(88, 27, 27), 0px 0px 5px rgb(105, 41, 115);
-  font-weight: bold;
-  letter-spacing: 0.08rem
-}
-
-.MonsterC:hover {
-  transform: scale(1.2);
-}
-
 .AETitle {
   background-color: rgba(105, 19, 102, 0.505);
   border-top: 6px solid;
@@ -183,24 +168,25 @@ export default {
   border-color: rgba(119, 19, 125, 0.749);
   font-family: "Morpheus";
   src: local("Morphues") url(./fonts/MORPHEUS.TTF) format("truetype");
-}
-
-
-
-
-.glass {
-  background-color: rgba(38, 37, 37, 0.397);
+  height: 7vh;
 }
 
 .encounterImage {
-  max-height: 40vh;
-  max-width: 40vw;
-  padding: 3rem;
+  height: 100%;
+  padding-left: 4rem;
+  padding-top: 1rem;
 }
 
-.bottomLeft {
-  height: 53vh;
-  overflow-y: auto;
+.content {
+  height: 93vh;
+}
+
+.img-col {
+  height: 30vh;
+}
+
+.monster-col {
+  height: 63vh;
 }
 
 .box {
@@ -216,7 +202,7 @@ export default {
   overflow-y: auto;
 }
 
-// .right {
-//   margin-left: 1rem;
-// }
+.h-100 {
+  height: 100%;
+}
 </style>

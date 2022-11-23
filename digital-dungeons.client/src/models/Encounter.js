@@ -8,6 +8,6 @@ export class Encounter {
     this.isCompleted = data.isCompleted;
     this.coverImg = data.coverImg || "";
     this.musicUrl = data.musicUrl || "";
-    this.creatorId = data.creatorId
+    this.creatorId = data.creatorId;
   }
 }

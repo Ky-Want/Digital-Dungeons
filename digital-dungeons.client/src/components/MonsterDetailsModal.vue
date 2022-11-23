@@ -84,7 +84,7 @@
             </div>
           </div>
           <div class="modal-footer bg-transparent-modal">
-            <button class="btn btn-dark" @click="addMonster()" v-if="account.id == encounter.creatorId">
+            <button class="btn btn-dark" @click="addMonster()" v-if="account.id == encounter?.creatorId">
               Add Monster
             </button>
           </div>
@@ -122,7 +122,7 @@ export default {
       async addMonster() {
         try {
           props.monster.encounterId = route.params.encounterId;
-          console.log(props.monster);
+          // console.log(props.monster);
           await monstersService.addMonsterToEncounter(props.monster);
           Pop.success(`You added ${props.monster.name} to your encounter`);
         } catch (error) {

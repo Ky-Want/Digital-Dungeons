@@ -2,7 +2,7 @@
   <div class="component">
     <div
       class="modal fade"
-      :id="'encounterModal' + encounter.id"
+      :id="'encounterModal' + encounter?.id"
       tabindex="-1"
       aria-labelledby="encounterModalLabel"
       aria-hidden="true"
@@ -59,13 +59,13 @@
                     name="description"
                     style="resize: none"
                     placeholder="Description:"
-                    maxlength="500"
+                    maxlength="1000"
                   ></textarea>
                   <label for="description">Description:</label>
                 </div>
                 <div class="text-end">
                   <span>{{ editable.desc ? editable.desc.length : 0 }}</span>
-                  <span>/ 500</span>
+                  <span>/ 1000</span>
                 </div>
               </div>
               <div class="modal-footer">
@@ -130,7 +130,7 @@ export default {
 
       async editEncounter(id) {
         try {
-          console.log(props.encounter.id, id);
+          // console.log(props.encounter.id, id);
           await encountersService.editEncounter(editable.value, id);
         } catch (error) {
           Pop.error(error);

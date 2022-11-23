@@ -82,34 +82,36 @@ form:invalid button[type="submit"] {
 }
 
 .text-visible {
-  text-shadow: 1px 1px rgba(0, 0, 0, 0.644), 0px 0px 5px rgba(189, 234, 30, 0.678);
-  color: rgb(96, 190, 234);
-  font-weight: 700;
-  letter-spacing: 0.035rem;
-}
-
-.text-visible:hover {
-  text-shadow: 1px 1px rgba(0, 0, 0, 0.644), 0px 0px 5px rgba(189, 234, 30, 0.678);
+  text-shadow: 1px 1px rgba(0, 0, 0, 0.644), 0px 0px 5px rgba(18, 34, 50, 0.678);
   color: rgb(96, 190, 234) !important;
   font-weight: 700;
   letter-spacing: 0.035rem;
 }
+
+// .text-visible:hover {
+//   text-shadow: 1px 1px rgba(0, 0, 0, 0.644), 0px 0px 5px rgba(189, 234, 30, 0.678);
+//   color: rgb(96, 190, 234) !important;
+//   font-weight: 700;
+//   letter-spacing: 0.035rem;
+// }
+
 .text-visible-light {
   text-shadow: 1px 1px rgba(0, 0, 0, 0.644), 0px 0px 5px rgba(189, 234, 30, 0.678);
-  color: rgb(214, 215, 215);
+  color: rgb(214, 215, 215) !important;
   font-weight: 700;
   letter-spacing: 0.035rem;
 }
 
 .text-visible-light:hover {
   text-shadow: 1px 1px rgba(0, 0, 0, 0.644), 0px 0px 5px rgba(189, 234, 30, 0.678);
-  color: rgb(214, 215, 215)!important;
+  color: rgb(214, 215, 215) !important;
   font-weight: 700;
   letter-spacing: 0.035rem;
 }
+
 .text-visible-dark {
   text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.678);
-  color: rgb(38, 38, 38);
+  color: rgb(38, 38, 38) !important;
   font-weight: 700;
   letter-spacing: 0.035rem;
 }

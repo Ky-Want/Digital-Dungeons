@@ -51,7 +51,7 @@ class CampaignService {
   }
 
 
-  //TODO - This is a future goal
+  // This is a future goal
   // async getCharactersByCampaignId() {
 
   // }

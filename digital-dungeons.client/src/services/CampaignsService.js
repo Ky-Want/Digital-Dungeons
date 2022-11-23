@@ -18,7 +18,7 @@ class CampaignsService {
     const campaign = new Campaign(res.data);
     AppState.campaigns = [...AppState.campaigns, campaign];
     AppState.activeCampaign = campaign;
-    console.log(AppState.activeCampaign);
+    // console.log(AppState.activeCampaign);
     router.push({
       name: "CampaignDetails",
       params: { campaignId: campaign.id },
@@ -35,10 +35,11 @@ class CampaignsService {
   }
   async editCampaign(campaignData, id) {
     const res = await baseApi.put(`api/campaigns/${id}`, campaignData);
-    console.log(campaignData);
+    // console.log(campaignData);
     const updatedCampaign = new Campaign(res.data);
     const index = AppState.campaigns.findIndex((c) => c.id == id);
     AppState.campaigns.splice(index, 1, updatedCampaign);
+    AppState.activeCampaign = updatedCampaign;
   }
 }
 

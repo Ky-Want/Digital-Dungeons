@@ -4,7 +4,7 @@ import { OBJECT_ID, SCHEMA_OPTIONS } from "../db/DbUtils";
 export const EncounterSchema = new Schema(
   {
     name: { type: String, required: true, maxlength: 50 },
-    desc: { type: String, maxlength: 500 },
+    desc: { type: String, maxlength: 1000 },
     campaignId: { type: OBJECT_ID, required: true },
     type: {
       type: String,

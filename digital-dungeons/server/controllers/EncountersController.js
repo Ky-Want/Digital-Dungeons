@@ -11,7 +11,9 @@ export class EncountersController extends BaseController {
       .use(Auth0Provider.getAuthorizedUserInfo)
       .post("", this.addEncounter)
       .delete("/:encounterId", this.removeEncounter)
-      .put("/:encounterId", this.editEncounter);
+      .put("/:encounterId", this.editEncounter)
+      .put("/:encounterId/monsters", this.editMonsters)
+
   }
 
   async getMonstersByEncounterId(req, res, next) {
@@ -54,6 +56,16 @@ export class EncountersController extends BaseController {
       res.send(encounter);
     } catch (error) {
       next(error);
+    }
+  }
+
+  async editMonsters(req, res, next) {
+    try {
+      const monstersReport = await monstersService.editMonsters(req.body, req.userInfo.id, req.params.encounterId)
+      res.send(monstersReport)
+    }
+    catch(error) {
+      next(error)
     }
   }
 }

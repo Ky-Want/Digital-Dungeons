@@ -5,7 +5,8 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [vue()],
   build: {
-    outDir: 'docs',
+    // outDir: 'docs',
+    outDir: '../digital-dungeons/client',
     sourcemap: false
   },
   server: {

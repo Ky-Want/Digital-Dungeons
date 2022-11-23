@@ -1,8 +1,10 @@
 import { dbContext } from "../db/DbContext";
 import { BadRequest, Forbidden } from "../utils/Errors.js";
+import { logger } from "../utils/Logger.js";
 
 class EncountersService {
   async editEncounter(encounterData) {
+    logger.log("edit encounter", encounterData)
     const encounter = await this.getEncounterById(encounterData.id);
     // @ts-ignore
     if (encounter.creatorId.toString() !== encounterData.creatorId) {
@@ -12,11 +14,12 @@ class EncountersService {
     encounter.name = encounterData.name || encounter.name;
     encounter.desc = encounterData.desc || encounter.desc;
     encounter.type = encounterData.type || encounter.type;
-    encounter.isCompleted = encounterData.isCompleted || encounter.isCompleted;
+    encounter.isCompleted = encounterData.isCompleted
     encounter.musicUrl = encounterData.musicUrl || encounter.musicUrl;
     encounter.coverImg = encounterData.coverImg || encounter.coverImg;
 
     await encounter.save();
+    logger.log("edit encounter", encounter)
     return encounter;
   }
   async getEncounterById(encounterId) {

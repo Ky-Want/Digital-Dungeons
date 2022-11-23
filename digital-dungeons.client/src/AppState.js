@@ -11,6 +11,7 @@ export const AppState = reactive({
   activeCampaign: null,
   /** @type {import('./models/Encounter.js').Encounter} */
   encounters: [],
+
   /** @type {import('./models/Encounter.js').Encounter || null} */
   activeEncounter: null,
   /** @type {import('./models/Monster.js').Monster[]} */

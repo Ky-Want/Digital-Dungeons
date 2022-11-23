@@ -11,7 +11,7 @@ class MonstersService {
   }
 
   async addMonsterToEncounter(monsterData) {
-    console.log(monsterData);
+    // console.log("This is what we made", monsterData);
     const res = await baseApi.post("/api/monsters", monsterData);
     const monster = new Monster(res.data);
     AppState.activeEncounterMonsters = [
@@ -19,7 +19,7 @@ class MonstersService {
       monster,
     ];
     // console.log(monster);
-    // console.log(AppState.activeEncounterMonsters);
+    // console.log("Hello Appstate", AppState.activeEncounterMonsters);
   }
 
   async removeMonster(monsterId) {
@@ -33,10 +33,28 @@ class MonstersService {
     const res = await baseApi.put(`api/monsters/${id}`, monsterData);
     // console.log(monsterData);
     const updatedMonster = new Monster(res.data);
-    console.log(res.data);
-    console.log(updatedMonster);
+    // console.log(res.data);
+    // console.log(updatedMonster);
     const index = AppState.activeEncounterMonsters.findIndex((m) => m.id == id);
     AppState.activeEncounterMonsters.splice(index, 1, updatedMonster);
+  }
+  async rollInitiatives(encounterId) {
+    // console.log(encounterId);
+
+    if (AppState.activeEncounterMonsters == 0) {
+      throw new Error(
+        "Sorry no monsters on this campaign, add monsters to this encounter"
+      );
+    }
+    AppState.activeEncounterMonsters.forEach((m) => {
+      const calcDexMod = Math.floor((m.dexterity - 10) / 2);
+      const rollInitiative = Math.floor(Math.random() * 20 + 1);
+      m.initiative = calcDexMod + rollInitiative;
+    });
+    const res = await baseApi.put(
+      `api/encounters/${encounterId}/monsters`,
+      AppState.activeEncounterMonsters
+    );
   }
 }
 

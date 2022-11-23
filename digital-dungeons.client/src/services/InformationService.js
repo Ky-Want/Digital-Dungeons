@@ -34,6 +34,7 @@ class InformationService {
       case "classes":
         AppState.classes = res.data.results.map(data => new DndClass(data))
         this.setClassCoverImg()
+        // console.log(AppState.classes)
         break;
       case "magicitems":
         AppState.magicitems = res.data.results.map(data => new MagicItem(data))
